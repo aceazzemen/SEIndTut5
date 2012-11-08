@@ -12,10 +12,16 @@ import java.math.BigDecimal;
 public class Discount {
     private final Integer counts;
     private final BigDecimal amount;
+    private final String name;
 
-    public Discount(Integer counts, BigDecimal amount){
+    public Discount(String name ,Integer counts, BigDecimal amount){
         this.amount = amount;
         this.counts = counts;
+        this.name = name;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public Integer getCounts(){

@@ -25,6 +25,6 @@ public abstract class Deal {
         return serialNo;
     }
 
-    public abstract HashMap<Product,Discount> enforce (HashMap<Product,Integer> scannedProducts);
+    public abstract Discount enforce (HashMap<Product,Integer> scannedProducts);
 
 }

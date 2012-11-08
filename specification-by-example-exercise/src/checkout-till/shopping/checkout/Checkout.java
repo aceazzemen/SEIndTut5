@@ -1,8 +1,11 @@
 package shopping.checkout;
 
+import shopping.deals.Deal;
 import shopping.deals.DealEnforcer;
+import shopping.deals.Discount;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
@@ -15,7 +18,7 @@ public class Checkout implements BarcodeScanListener {
     private final DealEnforcer dealEnforcer;
 	
 	private final LinkedHashMap<Product, Integer> scannedProducts = new LinkedHashMap<Product, Integer>();
-	
+
 	public Checkout(ProductRange productRange, LEDDisplay display, Beeper beeper, Printer printer) {
 		this.productRange = productRange;
 		this.printer = new ReceiptFormatter(printer);
@@ -25,7 +28,12 @@ public class Checkout implements BarcodeScanListener {
 	
 	public void reset() {
 		scannedProducts.clear();
+        dealEnforcer.clearAll();
 	}
+
+    public void addDeal(Deal deal){
+       dealEnforcer.addDeal(deal);
+    }
 	
 	public void barcodeScanned(String barcode) {
 		Product product;
@@ -61,16 +69,20 @@ public class Checkout implements BarcodeScanListener {
 
 	public void paymentAccepted() {
 		BigDecimal total = BigDecimal.ZERO;
-		
+
 		for (Product product : scannedProducts.keySet()) {
 			int count = unitsScanned(product);
 			BigDecimal lineTotal = product.priceOf(count);
-			
+
 			total = total.add(lineTotal);
 			
 			printer.printReceiptLine(product, count, lineTotal);
 		}
-		
+        ArrayList<Discount> discounts = dealEnforcer.retrieveDiscounts(scannedProducts);
+        for (Discount discount : discounts){
+            total = total.subtract(discount.getAmount());
+            printer.printDiscountLine(discount);
+        }
 		printer.printTotalLine(total);
 		printer.endOfReceipt();
 	}

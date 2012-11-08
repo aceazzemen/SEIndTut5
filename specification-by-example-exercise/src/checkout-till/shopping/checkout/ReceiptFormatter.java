@@ -1,5 +1,7 @@
 package shopping.checkout;
 
+import shopping.deals.Discount;
+
 import java.math.BigDecimal;
 
 public class ReceiptFormatter {
@@ -13,6 +15,11 @@ public class ReceiptFormatter {
 		printer.print(count + " " + product.name() + " @ "
 				+ product.unitPrice() + " each = " + lineTotal + "\n");
 	}
+
+    public void printDiscountLine(Discount discount) {
+        printer.print(discount.getCounts() + " " + discount.getName() +
+                " = -" + discount.getAmount() + "\n");
+    }
 	
 	public void printTotalLine(BigDecimal total) {
 		printer.print("Total = " + total + "\n");

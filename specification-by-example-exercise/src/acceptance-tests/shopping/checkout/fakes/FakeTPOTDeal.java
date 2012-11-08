@@ -5,6 +5,7 @@ import shopping.deals.Deal;
 import shopping.deals.Discount;
 import shopping.deals.ProductCounter;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -16,16 +17,22 @@ import java.util.*;
  */
 public class FakeTPOTDeal extends Deal {
 
+    private static Integer sn = 1231243;
+    private static final String name = "TOPT Deal";
     private final ArrayList<Product> products;
 
-    public FakeTPOTDeal(Integer serialNo, ArrayList<Product> products){
-        super(serialNo);
-        this.products = products;
+    public FakeTPOTDeal(){
+        super(sn);
+        this.products = new ArrayList<Product>();
         Collections.sort(products,new PriceSort());
     }
 
+    public void addProducts(Product p){
+        products.add(p);
+    }
+
     @Override
-    public HashMap<Product, Discount> enforce(HashMap<Product, Integer> scannedProducts) {
+    public Discount enforce(HashMap<Product, Integer> scannedProducts) {
         //get all related products
         ArrayList<ProductCounter> prodlist = new ArrayList<ProductCounter>();
         int count = 0;
@@ -44,7 +51,7 @@ public class FakeTPOTDeal extends Deal {
 //            Discount discount = new Discount();
             current = prod.next();
             int times = 0;
-            double amount = 0;
+            BigDecimal amount = new BigDecimal((int)0);
             while(count>=3){
                 count -= 3;
                 //not elegant but whatever
@@ -52,8 +59,11 @@ public class FakeTPOTDeal extends Deal {
                     current = prod.next();
                 }
                 times++;
-                amount+= current.unitPrice();
+                BigDecimal something = current.unitPrice();
+                amount = amount.add(current.unitPrice());
+
             }
+            return new Discount(name ,times,amount);
 
         }
         return null;

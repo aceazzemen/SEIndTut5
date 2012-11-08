@@ -1,9 +1,10 @@
 
 import shopping.checkout.Checkout;
-import shopping.checkout.fakes.FakeBeeper;
-import shopping.checkout.fakes.FakeLEDDisplay;
-import shopping.checkout.fakes.FakePrinter;
-import shopping.checkout.fakes.FakeProductRange;
+import shopping.checkout.Product;
+import shopping.checkout.fakes.*;
+import shopping.deals.Deal;
+
+import java.util.ArrayList;
 
 
 /*
@@ -16,11 +17,19 @@ public class SystemUnderTest {
 	public static final FakeProductRange productRange = new FakeProductRange();
 	public static final FakeLEDDisplay display = new FakeLEDDisplay();
 	public static final FakePrinter printer = new FakePrinter();
-	public static final FakeBeeper beeper = new FakeBeeper();
-	
+    public static final FakeBeeper beeper = new FakeBeeper();
+    public static final FakeTPOTDeal deal = new FakeTPOTDeal();
+
 	public static final Checkout till = new Checkout(productRange, display, beeper, printer);
 	
-	
+	public static void addTPOTProduct(Product p){
+        deal.addProducts(p);
+    }
+
+    public static void finalisedDeal(){
+        till.addDeal(deal);
+    }
+
 	public static void resetTill() {
 		till.reset();
 		display.clearDisplay();
